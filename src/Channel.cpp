@@ -50,6 +50,8 @@ Channel::Channel(
 		, _uuid(uuid)
 		, _apiProtocol(apiProtocol)
 		, _duplicates (0)
+	    , _multiplier (1.0)
+		, _limitpos(false)
 {
 	id = instances++;
 
@@ -83,7 +85,14 @@ Channel::Channel(
 		print(log_alert, "Missing or invalid aggmode (%s)", name(), oss.str().c_str());
 		throw;
 	}
-
+	try {
+		_limitpos = optlist.lookup_bool(pOptions, "limitpos");
+	} catch (vz::OptionNotFoundException &e) {
+		_limitpos = false; /* by default values are not limited to positiv */
+	} catch (vz::VZException &e) {
+		print(log_alert, "Invalid type for limitpos", name());
+		throw;
+	}
 	try {
 		_duplicates = optlist.lookup_int(pOptions, "duplicates");
 		if (_duplicates < 0) throw vz::VZException("duplicates < 0 not allowed");
@@ -95,6 +104,17 @@ Channel::Channel(
 		print(log_alert, "Invalid parameter duplicates (%s)", name(), oss.str().c_str());
 		throw;
 	}
+
+	try {
+		// multiplier
+		_multiplier = optlist.lookup_double(pOptions, "multiplier");
+	} catch (vz::OptionNotFoundException &e) {
+		_multiplier = 1; /* multiply with 1 = no change */
+	} catch (vz::VZException &e) {
+		print(log_alert, "Invalid type for multiplier", name());
+		throw;
+	}
+
 
 	pthread_cond_init(&condition, NULL); // initialize thread syncronization helpers
 }

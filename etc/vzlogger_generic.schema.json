@@ -104,6 +104,16 @@
                     "minimum": 0,
                     "default": 0,
                     "description": "default 0 (send duplicate values), >0 = send duplicate values only each <duplicates> seconds. Activate only for abs. counter values (Zaehlerstaende) and not for impulses!"
+                },
+                "multiplier": {
+                    "type": "double",
+                    "default": 1.0,
+                    "description": "multiply reading with multiplier. To revert negativ power readings"
+                },
+                "limitpos": {
+                    "type": "bool",
+                    "default": false,
+                    "description": "revert negativ readings to 0.0. Used after optional multiplier"
                 }
             },
             "required": ["api", "uuid", "identifier", "middleware", "aggmode", "duplicates"]

@@ -102,6 +102,9 @@ class Channel {
 	}
 
 	int duplicates() const { return _duplicates; }
+	double multiplier() const { return _multiplier; }
+	bool limitpos() const { return _limitpos; }
+
 
 	private:
 	static int instances;
@@ -122,6 +125,9 @@ class Channel {
 	std::string _uuid;			// unique identifier for middleware
 	std::string _apiProtocol;	// protocol of api to use for logging
 	int _duplicates;			// how to handle duplicate values (see conf)
+
+	double _multiplier;         // multiplier of value ( for negativ values from meter )
+	bool _limitpos;             // reset negativ values to 0 if true
 };
 
 #endif /* _CHANNEL_H_ */

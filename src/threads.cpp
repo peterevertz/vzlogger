@@ -99,9 +99,16 @@ void * reading_thread(void *arg) {
 								(*ch)->last(&rds[i]);
 							}
 
+							Reading _r=rds[i]; // work on copy to possible reuse one reading to several channels
+							double _d=rds[i].value()* (*ch)->multiplier();
+							if( (*ch)->limitpos() && _d < 0.0) {
+								_d=0.0;
+							}
+							_r.value(_d);
+
 							print(log_info, "Adding reading to queue (value=%.2f ts=%lld)", (*ch)->name(),
-									rds[i].value(), rds[i].time_ms());
-							(*ch)->push(rds[i]);
+									_r.value(), _r.time_ms());
+							(*ch)->push(_r);
 
 							// provide data to push data server:
 							if (pushDataList) {
